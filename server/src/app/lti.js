@@ -38,6 +38,10 @@ let oauth_consumer_key;
 
 let caliper_profile_url_parts;
 
+const testFn = () => {
+  console.log("HELLO");
+};
+
 /*
  * POST LTI Launch Received
  */
@@ -79,13 +83,26 @@ export const got_launch = (req, res) => {
     return_url = "https://google.com";
   }
 
-  res.render("lti", {
-    title: "LTI Launch Received!",
-    content: content,
-    return_url: return_url,
-    deeplink_url: deeplink_url,
-    return_onclick: "location.href=" + "'" + return_url + "';",
-  });
+  console.log("akjsbfhlhabsflhjbasjhfbashjfbajhsbfjhasf", req.body.roles);
+  if (req.body.roles == "Learner") {
+    res.render("student", {
+      title: "LTI Launch Received!",
+      content: content,
+      return_url: return_url,
+      deeplink_url: deeplink_url,
+      return_onclick: "location.href=" + "'" + return_url + "';",
+      testFn: testFn,
+    });
+  } else {
+    res.render("lti", {
+      title: "LTI Launch Received!",
+      content: content,
+      return_url: return_url,
+      deeplink_url: deeplink_url,
+      return_onclick: "location.href=" + "'" + return_url + "';",
+      testFn: testFn,
+    });
+  }
 };
 
 export const caliper = (req, res) => {

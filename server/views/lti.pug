@@ -1,138 +1,28 @@
-doctype html
-head
-  title SpaceCollab DeepLink
-  script(src='https://code.jquery.com/jquery-3.7.0.min.js', integrity='sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=', crossorigin='anonymous')
-  script(src='https://cdn.tailwindcss.com')
-body.bg-gray-700
-  header.flex.flex-row.items-center.justify-center
-    ul.flex.flex-wrap.text-sm.font-medium.text-center.text-gray-400.border-gray-200.gap-4.my-4
-      li.nav-item.flex.items-center.justify-center(data-target='desktop-android-content')
-        a.inline-block.p-4.rounded-lg(href='#', class='hover:text-gray-300 hover:bg-gray-800 focus:border-4 focus:border-gray-300') Pair using Dekstop or Android
-      li.nav-item.flex.items-center.justify-center(data-target='vr-content')
-        a.inline-block.p-4.rounded-lg(href='#', class='hover:text-gray-300 hover:bg-gray-800 focus:border-4 focus:border-gray-300') Pair usign VR Device
-  main.flex.flex-col.items-center.justify-center.w-full.h-full
-    .container.py-8.px-4.text-gray-300
-      #desktop-android-content.content-div.hidden
-        // Home Content
-        #desktop-install.flex.flex-col.items-center.gap-2
-          h2.text-2xl Spacecollab Desktop Installation Confirmation
-          .mb-4
-            p Have You Download The Desktop App Yet?
-          button#desktop-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl Yes, I have.
-          button#desktop-not-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl No, I have not.
-        #android-install.flex.flex-col.items-center.gap-2
-          h2.text-2xl Spacecollab Android Installation Confirmation
-          .mb-4
-            p Have You Download The Android App Yet?
-          button#android-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl Yes, I have.
-          button#android-not-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl No, I have not.
-        #desktop-download-link.flex.flex-col.items-center.gap-2.hidden
-          h2.text-2xl Desktop Download Link
-          .mb-4
-            a Link
-          .mb-4
-            p
-              | If You are done installing, 
-              span.text-blue-700.cursor-pointer.desktop-done-install click here
-        #android-download-link.flex.flex-col.items-center.gap-2.hidden
-          h2.text-2xl Android Download Link
-          .mb-4
-            p Link
-          .mb-4
-            p
-              | If You are done installing, 
-              span.text-blue-700.cursor-pointer.android-done-install click here
-        #desktop-content.content.flex.flex-col.items-center.gap-2
-          h2.text-2xl SpaceCollab Desktop
-          .mb-4
-            p
-              | Make sure to click the link below to connect through Deeplink with 
-              br
-              |                 Spacecollab Interactive Education Program
-          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${deeplink_url}`, target='_blank') Deep Link Desktop
-        #android-content.content.flex.flex-col.items-center.gap-2
-          h2.text-2xl SpaceCollab Android Pair
-          .mb-4
-            p
-              | Make sure to click the link below to connect through Deeplink with 
-              br
-              |                 Spacecollab Interactive Education Program
-          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${depplink_url}`, target='_blank') Deep Link Android
-      #vr-content.content-div.hidden
-        // Home Content
-        .flex.flex-col.items-center.gap-2
-          h2.text-2xl VR SpaceCollab
-          .mb-4
-            p
-              | This is the content for the VR page. Click the link below to redirect to spacecollab
-          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${deeplink_url}`, target='_blank') Deep Link
-script.
-  // Load characters on page load
-  $(document).ready(function () {
-  const userAgent = navigator.userAgent;
-  let platform = null;
-  function decidesIfPcorAndro() {
-  $('#desktop-install').removeClass('hidden');
-  $('#android-install').removeClass('hidden');
-  $("#desktop-download-link").addClass('hidden');
-  $("#android-download-link").addClass('hidden');
-  // Check if the User-Agent contains "Android"
-  if (userAgent.match(/Android/i)) {
-  // User is accessing from an Android device
-  console.log("Android device detected", navigator.userAgent);
-  platform = 'android';
-  $('#desktop-install').addClass('hidden')
-  } else {
-  // User is accessing from a PC or another device
-  console.log("PC or other device detected", navigator.userAgent);
-  platform = 'desktop';
-  $('#android-install').addClass('hidden')
-  }
-  }
-  decidesIfPcorAndro();
-  $("#desktop-installed").click(function() {
-  console.log('heiho', platform)
-  if (platform === 'desktop') {
-  $("#desktop-content").removeClass("hidden");
-  $("#desktop-install").addClass("hidden");
-  }
-  })
-  $("#desktop-not-installed").click(function () {
-  $("#desktop-download-link").removeClass('hidden');
-  $("#desktop-install").addClass("hidden");
-  })
-  $(".desktop-done-install").click(function () {
-  $("#desktop-download-link").addClass('hidden');
-  $("#desktop-content").removeClass("hidden");
-  })
-  $(".android-done-install").click(function () {
-  $("#android-download-link").addClass('hidden');
-  $("#android-content").removeClass("hidden");
-  })
-  $("#android-not-installed").click(function () {
-  $("#android-download-link").removeClass('hidden');
-  $("#android-install").addClass("hidden");
-  })
-  $("#android-installed").click(function() {
-  console.log('heiho', platform)
-  if (platform === 'android') {
-  $("#android-download").removeClass("hidden");
-  $("#android-install").addClass("hidden");
-  }
-  })
-  $(".nav-item").click(function() {
-  //to reset installation confirmation
-  decidesIfPcorAndro();
-  // Remove the "text-blue-600" class from all navigation items
-  $(".nav-item").removeClass("text-blue-600");
-  // Add the "text-blue-600" class to the clicked navigation item
-  $(this).addClass("text-blue-600");
-  var targetDivID = $(this).data("target");
-  // Hide all content divs
-  $(".content-div").addClass("hidden")
-  // Show the target content div
-  $("#" + targetDivID).removeClass("hidden");
-  // hide the desktop and android content
-  $('.content').addClass('hidden');
-  });
-  });
+extends layout
+
+block content
+  h1= title
+  p We have received your LTI Launch. You can view the request body below.
+  p What would you like to do now?
+  p
+    form(name="login", action="/lti/outcomes", method="post")
+      input(type="submit", value="Outcomes")
+    form(name="caliper", action="/caliper/register", method="post")
+      input(type="submit", value="Register Caliper")
+    form(name="caliper_send", action="/caliper/send", method="post")
+      input(type="submit", value="Emit Event")
+    form(name="rest_auth", action="/rest/auth", method="post")
+      input(type="submit", value="Get REST Token")
+    form(name="rest_user", action="/rest/user", method="post")
+      input(type="submit", value="Get User Info")
+    form(name="rest_course", action="/rest/course", method="post")
+      input(type="submit", value="Get Course Info")
+    form(name="show_events", action="/caliper", method="get")
+      input(type="submit", value="Display Caliper Events")
+    form(name="show_membership", action="/lti/membership", method="get")
+      input(type="submit", value="Get Membership")
+    form(name="return", action=return_url, method="get")
+      input(type="button", onclick=return_onclick, value="Return to Learn")
+  p 
+  p Here's the request or response:
+  p !{content}
