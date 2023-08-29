@@ -6,6 +6,7 @@ import finish from "finish";
 import https from "https";
 import lti from "ims-lti";
 import moment from "moment";
+import axios from "axios";
 import url from "url";
 import utils from "./utils";
 import { EntityFactory, EventFactory } from "ims-caliper";
@@ -46,62 +47,97 @@ const testFn = () => {
  * POST LTI Launch Received
  */
 
-export const got_launch = (req, res) => {
-  req.body = _.omit(req.body, "__proto__");
+export const got_launch = async (req, res) => {
+  try {
+    req.body = _.omit(req.body, "__proto__");
 
-  let content = "";
+    let content = "";
 
-  let keys = Object.keys(req.body).sort();
-  for (let i = 0, length = keys.length; i < length; i++) {
-    content += keys[i] + " = " + req.body[keys[i]] + "<br />";
-  }
+    let keys = Object.keys(req.body).sort();
+    for (let i = 0, length = keys.length; i < length; i++) {
+      content += keys[i] + " = " + req.body[keys[i]] + "<br />";
+    }
 
-  lis_result_sourcedid = req.body.lis_result_sourcedid;
-  lis_outcome_service_url = req.body.lis_outcome_service_url;
-  caliper_profile_url = req.body.custom_caliper_profile_url;
-  custom_caliper_federated_session_id =
-    req.body.custom_caliper_federated_session_id;
-  oauth_consumer_key = req.body.oauth_consumer_key;
-  course_id = req.body.context_id;
-  user_id = req.body.user_id;
-  return_url = req.body.launch_presentation_return_url;
-  sha_method = req.body.oauth_signature_method;
-  deeplink_url = `spacecollab://?oath_ckey=${oauth_consumer_key}&roles=${req.body.roles}&fullname=${req.body.lis_person_name_full}`;
+    lis_result_sourcedid = req.body.lis_result_sourcedid;
+    lis_outcome_service_url = req.body.lis_outcome_service_url;
+    caliper_profile_url = req.body.custom_caliper_profile_url;
+    custom_caliper_federated_session_id =
+      req.body.custom_caliper_federated_session_id;
+    oauth_consumer_key = req.body.oauth_consumer_key;
+    course_id = req.body.context_id;
+    user_id = req.body.user_id;
+    return_url = req.body.launch_presentation_return_url;
+    sha_method = req.body.oauth_signature_method;
 
-  //console.log('Signature Method: ' + sha_method);
-  if (req.body.custom_context_memberships_url !== undefined) {
-    membership_url = req.body.custom_context_memberships_url;
-    membership_url.substring(membership_url.indexOf("=") + 1);
-  } else {
-    membership_url = "";
-  }
+    //console.log('Signature Method: ' + sha_method);
+    if (req.body.custom_context_memberships_url !== undefined) {
+      membership_url = req.body.custom_context_memberships_url;
+      membership_url.substring(membership_url.indexOf("=") + 1);
+    } else {
+      membership_url = "";
+    }
 
-  if (return_url === undefined && caliper_profile_url !== undefined) {
-    let parts = url.parse(caliper_profile_url, true);
-    return_url = parts.protocol + "//" + parts.host;
-  } else if (return_url === undefined) {
-    return_url = "https://google.com";
-  }
+    if (return_url === undefined && caliper_profile_url !== undefined) {
+      let parts = url.parse(caliper_profile_url, true);
+      return_url = parts.protocol + "//" + parts.host;
+    } else if (return_url === undefined) {
+      return_url = "https://google.com";
+    }
 
-  console.log("akjsbfhlhabsflhjbasjhfbashjfbajhsbfjhasf", req.body.roles);
-  if (req.body.roles == "Learner") {
-    res.render("student", {
-      title: "LTI Launch Received!",
-      content: content,
-      return_url: return_url,
-      deeplink_url: deeplink_url,
-      return_onclick: "location.href=" + "'" + return_url + "';",
-      testFn: testFn,
-    });
-  } else {
-    res.render("lti", {
-      title: "LTI Launch Received!",
-      content: content,
-      return_url: return_url,
-      deeplink_url: deeplink_url,
-      return_onclick: "location.href=" + "'" + return_url + "';",
-      testFn: testFn,
-    });
+    const { data } = await axios.post(
+      "https://spacecollaboration.web.app/api/binus/requestTrial",
+      {
+        user_id: req.body.user_id,
+        roles: req.body.roles,
+        resource_link_id: req.body.resource_link_id,
+        lis_course_section_sourcedid: req.body.lis_course_section_sourcedid,
+        resource_link_title: req.body.resource_link_title,
+        resource_link_description:
+          req.body?.resource_link_description ?? "NO DESCRIPTION PROVIDED",
+        lis_result_sourcedid: req.body.lis_result_sourcedid,
+        lis_person_name_full: req.body.lis_person_name_full,
+        lis_person_contact_email_primary:
+          req.body.lis_person_contact_email_primary,
+        quota: "",
+      }
+    );
+
+    const codePair = data?.user_uid
+      ? `${data?.user_uid}-${req.body.lis_course_section_sourcedid}-${req.body.resource_link_id}`
+      : "Pair code not found.";
+
+    console.log(codePair, req.body.roles);
+
+    if (req.body.roles === "Learner") {
+      deeplink_url = `spacecollab://?code=${codePair}`;
+      res.render("student", {
+        title: "LTI Launch Received!",
+        content: content,
+        return_url: return_url,
+        deeplink_url: deeplink_url,
+        return_onclick: "location.href=" + "'" + return_url + "';",
+        codePair,
+      });
+    } else if (req.body.roles === "Instructor") {
+      res.render("teacher", {
+        resource_link_id: "",
+        course_id: req.body.lis_course_section_sourcedid,
+        course_title: req.body.context_title,
+        resource_link_title: req.body.resource_link_title,
+        resource_link_id: req.body.resource_link_id,
+      });
+    } else {
+      res.render("lti", {
+        title: "LTI Launch Received!",
+        content: content,
+        return_url: return_url,
+        return_onclick: "location.href=" + "'" + return_url + "';",
+        codePair,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("error");
   }
 };
 
@@ -320,36 +356,40 @@ export const outcomes = (req, res) => {
 };
 
 export const send_outcomes = (req, res) => {
-  let options = {};
+  try {
+    let options = {};
+    console.log("ZAPPP", req.body);
 
-  options.consumer_key = req.body.key;
-  options.consumer_secret = req.body.secret;
-  options.service_url = req.body.url;
-  options.source_did = req.body.sourcedid;
+    options.consumer_key = req.body.key;
+    options.consumer_secret = req.body.secret;
+    options.service_url = req.body.url;
+    options.source_did = req.body.sourcedid;
 
-  let grade = parseFloat(req.body.grade);
+    let grade = parseFloat(req.body.grade);
 
-  let outcomes_service = new lti.OutcomeService(options);
+    let outcomes_service = new lti.OutcomeService(options);
 
-  outcomes_service.send_replace_result(grade, function (err, result) {
-    //console.log(`Replace result ${result}`); //True or false
-
-    if (result) {
-      res.render("lti", {
-        title: "Outcome successfully sent!",
-        content: result,
-        return_url: return_url,
-        return_onclick: "location.href=" + "'" + return_url + "';",
-      });
-    } else {
-      res.render("lti", {
-        title: "Outcome Failed!",
-        content: err,
-        return_url: return_url,
-        return_onclick: "location.href=" + "'" + return_url + "';",
-      });
-    }
-  });
+    outcomes_service.send_replace_result(grade, function (err, result) {
+      //console.log(`Replace result ${result}`); //True or false
+      if (result) {
+        res.render("lti", {
+          title: "Outcome successfully sent!",
+          content: result,
+          return_url: return_url,
+          return_onclick: "location.href=" + "'" + return_url + "';",
+        });
+      } else {
+        res.render("lti", {
+          title: "Outcome Failed!",
+          content: err,
+          return_url: return_url,
+          return_onclick: "location.href=" + "'" + return_url + "';",
+        });
+      }
+    });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
 };
 
 export const get_outcomes = (req, res) => {
@@ -384,18 +424,14 @@ export const get_outcomes = (req, res) => {
 };
 
 export const rest_auth = (req, res, key, secret) => {
-  console.log("kontol6969", caliper_profile_url);
   //build url from caliper profile url
   let parts = url.parse(caliper_profile_url, true);
-  console.log("kontolparts");
   // eslint-disable-next-line no-unused-vars
   // let oauth_host = parts.protocol + "//" + parts.host;
 
   let auth_hash = new Buffer(key + ":" + secret).toString("base64");
-  console.log("kontolauth_hash");
 
   let auth_string = "Basic " + auth_hash;
-  console.log("kontolauth_string");
 
   /*console.log(
     'oauth_host: ' +

@@ -87,20 +87,19 @@ module.exports = function (app) {
 
   //=======================================================
   // LTI 1.1 provider and caliper stuff
-  app.post('/caliper/send', (req, res) => {
-    lti.caliper_send(req, res);
-  });
-  app.post('/caliper/register', (req, res) => {
-    lti.caliper(req, res);
-  });
-  app.post('/caliper', (req, res) => {
-    eventstore.got_caliper(req, res);
-  });
-  app.get('/caliper', (req, res) => {
-    eventstore.show_events(req, res);
-  });
+  // app.post('/caliper/send', (req, res) => {
+  //   lti.caliper_send(req, res);
+  // });
+  // app.post('/caliper/register', (req, res) => {
+  //   lti.caliper(req, res);
+  // });
+  // app.post('/caliper', (req, res) => {
+  //   eventstore.got_caliper(req, res);
+  // });
+  // app.get('/caliper', (req, res) => {
+  //   eventstore.show_events(req, res);
+  // });
   app.post('/rest/auth', (req, res) => {
-    console.log("kontolauth");
     lti.rest_auth(req, res, lti11Setup.key, lti11Setup.secret);
   });
   app.post('/rest/user', (req, res) => {
@@ -118,9 +117,9 @@ module.exports = function (app) {
   app.post('/lti/get_outcomes', (req, res) => {
     lti.get_outcomes(req, res);
   });
-  app.get('/lti/membership', (req, res) => {
-    lti.get_membership(req, res);
-  });
+  // app.get('/lti/membership', (req, res) => {
+  //   lti.get_membership(req, res);
+  // });
   app.post('/lti', (req, res) => {
     console.log('--------------------\nlti');
     console.log('LTI11 - receive post from Learn LTI launch');

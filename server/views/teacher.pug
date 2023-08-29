@@ -1,0 +1,80 @@
+doctype html
+head
+  title SpaceCollab DeepLink
+  script(src='https://code.jquery.com/jquery-3.7.0.min.js', integrity='sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=', crossorigin='anonymous')
+  script(src='https://cdn.tailwindcss.com')
+body.bg-gray-700
+  main.flex.flex-col.items-center.justify-center.w-full.h-full
+    .container.py-8.px-6.text-gray-300.flex.flex-col.items-start.justify-center.gap-4.mx-auto
+      p.text-xl 
+        | Click This Button to Sync The Grade on course title 
+        span#course_title.text-blue-700=course_title
+        |  and resource title 
+        span#resource_link_title.text-blue-700=resource_link_title
+      #course_id.hidden=course_id
+      #resource_link_id.hidden=resource_link_id
+      button#sync.px-4.py-2.border-2.rounded-2xl.border-gray-300.self-end Sync Grades
+      #loading-bar.max-w-md.w-full.bg-gray-200.rounded-full.h-3.mb-4
+        .bg-blue-600.h-3.rounded-full
+      h2#progress-percentage.text-xl
+      #lti-errors.flex.flex-col.items-center.gap-4   
+script.
+  // Load characters on page load
+  $(document).ready(function() {
+    $("#loading-bar").hide();
+    $("#lti-errors").hide();
+    async function syncStudent () {
+      //- get all the grades and result source id from the lowdb
+      //- shoot them one by one using Promise.all
+      $("#loading-bar").css({ width: "0%"});
+      $("#loading-bar").show();
+      const course_id = $("#course_id").text();
+      const resource_link_id = $("#resource_link_id").text();
+      $.ajax({
+        url: `http://34.101.49.68:3001/data?course_id=${course_id}&resource_link_id=${resource_link_id}`,
+        method: "GET",
+        dataType: 'json',
+        success: async (response) => {
+          if (response.length > 0) {
+            const grades = [];
+            const maxLength = response.length;
+            for (const [index, gradeObject] of response.entries()) {
+              //- grades.push(
+              //- )
+              const loadingBarProgress = `${parseInt(((index + 1)/maxLength) * 100)}%`
+              await $.ajax({
+                url: "http://34.101.49.68:3000/lti/send_outcomes",
+                method: "POST",
+                data: {
+                  secret: 'secret',
+                  key: 'ltijavascript',
+                  url: "http://34.101.49.68/mod/lti/service.php",
+                  sourcedid: gradeObject.lis_result_sourcedid,
+                  grade: gradeObject.grade
+                },
+                success: (response) => {
+                  if (response.includes('Outcome successfully sent')) {
+                    $('#loading-bar').css({ width: loadingBarProgress, })
+                    $("#progress-percentage").text(loadingBarProgress);
+                  } else {
+                    alert(`Something went inputing ${gradeObject?.lis_person_name_full}'s grade`)
+                  }
+                },
+                error: (error) => {}
+              })         
+            }
+            //- await Promise.all(grades);  
+          }
+        },
+        error: (error) => {
+          //- error fetching users and grade
+          alert("Error: " + error);
+        },
+      })
+    }
+    
+    $("#sync").click(async function (){
+      await syncStudent();
+    })
+
+  });
