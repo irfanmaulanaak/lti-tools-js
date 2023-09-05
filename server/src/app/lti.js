@@ -120,6 +120,7 @@ export const got_launch = async (req, res) => {
         codePair,
       });
     } else if (req.body.roles == "Instructor" || req.body.roles == "urn:lti:role:ims/lis/Instructor") {
+      const appInfo = config.default.lti11Setup;
       res.render("teacher", {
         resource_link_id: "",
         course_id: req.body.lis_course_section_sourcedid,
@@ -129,7 +130,9 @@ export const got_launch = async (req, res) => {
         moodle_service_url,
         codePair,
         deeplink_url,
-        studentLists: mahasiswaRes.data
+        studentLists: mahasiswaRes.data,
+        consumer_key: appInfo.key,
+        secret: appInfo.secret
       });
     } else {
       res.render("lti", {
@@ -404,23 +407,31 @@ export const get_outcomes = (req, res) => {
   let outcomes_service = new lti.OutcomeService(options);
 
   outcomes_service.send_read_result(function (err, result) {
-    //console.log(`Outcomes read result ${result}`);
+    // console.log(`Outcomes read result ${result}`);
 
     if (result || result === 0) {
-      res.render("lti", {
-        title: "Outcome successfully read!",
-        content: `Score: ${result}`,
-        return_url: return_url,
-        return_onclick: "location.href=" + "'" + return_url + "';",
-      });
+      return res.status(200).json({
+        result,
+      })
     } else {
-      res.render("lti", {
-        title: "Outcome read failed!",
-        content: err,
-        return_url: return_url,
-        return_onclick: "location.href=" + "'" + return_url + "';",
-      });
+      return res.status(500).send('error')
     }
+
+    // if (result || result === 0) {
+    //   res.render("lti", {
+    //     title: "Outcome successfully read!",
+    //     content: `Score: ${result}`,
+    //     return_url: return_url,
+    //     return_onclick: "location.href=" + "'" + return_url + "';",
+    //   });
+    // } else {
+    //   res.render("lti", {
+    //     title: "Outcome read failed!",
+    //     content: err,
+    //     return_url: return_url,
+    //     return_onclick: "location.href=" + "'" + return_url + "';",
+    //   });
+    // }
   });
 };
 

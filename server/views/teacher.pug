@@ -94,19 +94,23 @@ body.bg-gray-700
             #resource_link_title.text-gray-200.text-2xl=resource_link_title
           p.text-xl 
             | Fill in the blanks to enter the grade of the students
+          p.text-x1
+            | Grade format is 0-100
           #course_id.hidden=course_id
           #resource_link_id.hidden=resource_link_id
           #moodle_service_url.hidden=moodle_service_url
+          #consumer_key.hidden=consumer_key
+          #secret.hidden=secret
           .flex.flex-col.items-start.justify-center.gap-4
             each val in studentLists
               form.flex.gap-4.items-center.justify-center(id=`form_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)
                 .flex.flex-col.items-start.justify-center.gap-2.my-2
                   label.font-medium.text-gray-200.text-sm(for=`gradeinput_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)=val.lis_person_name_full
-                  input.p-2.rounded-full.text-gray-800(placeholder="Grade in Format 100% = 100", type="number", name=`grade_${val.user_id}`, id=`gradeinput_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)
-                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_result_sourcedid-${val.user_id}`, value=val.lis_result_sourcedid)
-                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_person_contact_email_primary-${val.user_id}`, value=val.lis_person_contact_email_primary)
-                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_course_section_sourcedid-${val.user_id}`, value=val.lis_course_section_sourcedid)
-                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`resource_link_id-${val.user_id}`, value=val.resource_link_id)
+                  input.p-2.rounded-full.text-gray-800(type="number", name=`grade`, id=`gradeinput_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)
+                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_result_sourcedid`, value=val.lis_result_sourcedid)
+                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_person_contact_email_primary`, value=val.lis_person_contact_email_primary)
+                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_course_section_sourcedid`, value=val.lis_course_section_sourcedid)
+                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`resource_link_id`, value=val.resource_link_id)
                 button.border-2.rounded-md.border-white.flex.items-center.justify-center.px-4.py-2.submit-button Upsert
           //- button#sync.px-4.py-2.border-2.rounded-2xl.border-gray-300.self-end Sync Grades
           //- #loading-bar.max-w-md.w-full.bg-gray-200.rounded-full.h-3.mb-4
@@ -119,9 +123,43 @@ script.
 
     Cookies.set('username', 'john_doe', { expires: 7 }); 
 
+    const consumer_key = $('#consumer_key').text();
+    const secret = $('#secret').text();
     const course_id = $("#course_id").text();
     const resource_link_id = $("#resource_link_id").text();
     const moodle_service_url = $("#moodle_service_url").text();
+
+    async function syncGrade () {
+      const forms = $('form');
+
+      for (const form of forms) {
+        const sourcedidInput = $(form).find('input[name="lis_result_sourcedid"]');
+        const sourcedid = sourcedidInput.val();
+
+        const data = {
+          key: consumer_key,
+          secret: secret,
+          url: moodle_service_url,
+          sourcedid
+        }
+
+        $.ajax({
+          url: "/lti/get_outcomes",
+          method: "POST",
+          data,
+          success: ({result}) => {
+            const gradeInput = $(form).find('input[name="grade"]');
+            gradeInput.val(result * 100)
+          },
+          error: (error) => {
+            console.log("ERROR: " + error);
+          }
+        })
+
+      }
+    }
+    
+    syncGrade();
 
     $('.back-to-menu').click(function() {
       // Hide all content divs
@@ -154,8 +192,8 @@ script.
       //- console.log("Form data:", JSON.stringify(formData));
 
       const data = {
-        secret: 'secret',
-        key: 'ltijavascript',
+        secret,
+        key: consumer_key,
         url: moodle_service_url,
         sourcedid,
         grade: grade / 100,

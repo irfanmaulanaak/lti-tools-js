@@ -5,7 +5,7 @@ async function main() {
         "https://lti.akses.my.id/api/data?resource_link_id=10&lis_course_section_sourcedid=10001",
     )
 
-    console.log(mahasiswaRes.data.length);
+    console.log(mahasiswaRes.data);
 
 }
 
