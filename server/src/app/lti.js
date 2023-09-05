@@ -39,10 +39,6 @@ let oauth_consumer_key;
 
 let caliper_profile_url_parts;
 
-const testFn = () => {
-  console.log("HELLO");
-};
-
 /*
  * POST LTI Launch Received
  */
@@ -93,22 +89,27 @@ export const got_launch = async (req, res) => {
         lis_course_section_sourcedid: req.body.lis_course_section_sourcedid,
         resource_link_title: req.body.resource_link_title,
         resource_link_description:
-          req.body?.resource_link_description ?? "NO DESCRIPTION PROVIDED",
+          req.body?.resource_link_description || "NO DESCRIPTION PROVIDED",
         lis_result_sourcedid: req.body.lis_result_sourcedid,
         lis_person_name_full: req.body.lis_person_name_full,
         lis_person_contact_email_primary:
           req.body.lis_person_contact_email_primary,
-        quota: "",
+        quota: "1",
       }
     );
 
+
+    const mahasiswaRes = await axios.get(
+      `https://lti.akses.my.id/api/data?resource_link_id=${req.body.resource_link_id}&lis_course_section_sourcedid=${req.body.lis_course_section_sourcedid}`,
+    )
+
     const codePair = data?.user_uid
-      ? `${data?.user_uid}-${req.body.lis_course_section_sourcedid}-${req.body.resource_link_id}`
+      ? `${data?.user_uid}_${req.body.resource_link_id}`
       : "Pair code not found.";
 
-    console.log(codePair, req.body.roles);
+    const moodle_service_url = req.body.lis_outcome_service_url
 
-    if (req.body.roles === "Learner") {
+    if (req.body.roles == "Learner" || req.body.roles == "urn:lti:role:ims/lis/Learner") {
       deeplink_url = `spacecollab://?code=${codePair}`;
       res.render("student", {
         title: "LTI Launch Received!",
@@ -118,13 +119,17 @@ export const got_launch = async (req, res) => {
         return_onclick: "location.href=" + "'" + return_url + "';",
         codePair,
       });
-    } else if (req.body.roles === "Instructor") {
+    } else if (req.body.roles == "Instructor" || req.body.roles == "urn:lti:role:ims/lis/Instructor") {
       res.render("teacher", {
         resource_link_id: "",
         course_id: req.body.lis_course_section_sourcedid,
         course_title: req.body.context_title,
         resource_link_title: req.body.resource_link_title,
         resource_link_id: req.body.resource_link_id,
+        moodle_service_url,
+        codePair,
+        deeplink_url,
+        studentLists: mahasiswaRes.data
       });
     } else {
       res.render("lti", {
@@ -136,8 +141,8 @@ export const got_launch = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
-    return res.status(500).send("error");
+    // console.log(error);
+    return res.status(500).send(error);
   }
 };
 
@@ -161,8 +166,6 @@ export const caliper = (req, res) => {
     headers: _build_headers(options, parts),
   };
 
-  // console.log(req_options);
-
   let http_req = https.request(req_options, function (http_res) {
     http_res.setEncoding("utf-8");
     let responseString = "";
@@ -170,7 +173,6 @@ export const caliper = (req, res) => {
       responseString += data;
     });
     http_res.on("end", function () {
-      // console.log(responseString);
       let json = JSON.parse(responseString);
       caliper_id = json["id"];
       eventStoreUrl = json["eventStoreUrl"];
@@ -358,7 +360,6 @@ export const outcomes = (req, res) => {
 export const send_outcomes = (req, res) => {
   try {
     let options = {};
-    console.log("ZAPPP", req.body);
 
     options.consumer_key = req.body.key;
     options.consumer_secret = req.body.secret;
@@ -451,7 +452,6 @@ export const rest_auth = (req, res, key, secret) => {
     },
   };
 
-  console.log("kontol", options);
 
   let http_req = https.request(options, function (http_res) {
     http_res.setEncoding("utf-8");
@@ -549,8 +549,6 @@ export const rest_getcourse = (req, res) => {
     headers: { Authorization: auth_string },
   };
 
-  console.log(options);
-
   let http_req = https.request(options, function (http_res) {
     http_res.setEncoding("utf-8");
     let responseString = "";
@@ -558,10 +556,9 @@ export const rest_getcourse = (req, res) => {
       responseString += data;
     });
     http_res.on("end", function () {
-      console.log(responseString);
       let json = JSON.parse(responseString);
 
-      console.log("Course Info: " + JSON.stringify(json, null, "  "));
+      // console.log("Course Info: " + JSON.stringify(json, null, "  "));
 
       res.render("lti", {
         title: "REST Course Info Received!",
@@ -583,7 +580,7 @@ export const get_membership = (req, res) => {
     let parts = url.parse(membership_url, true);
 
     let options = {
-      consumer_key: appInfo.key,
+      consumer_key: oauth_consumer_key,
       consumer_secret: appInfo.secret,
       url: parts.protocol + "//" + parts.host + parts.pathname, // Rebuild url without parameters
       oauth_version: "1.0",
@@ -602,8 +599,6 @@ export const get_membership = (req, res) => {
       method: "GET",
       headers: _build_headers(options, parts),
     };
-
-    console.log(req_options);
 
     let http_req = https.request(req_options, function (http_res) {
       http_res.setEncoding("utf-8");

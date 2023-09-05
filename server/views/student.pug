@@ -4,73 +4,90 @@ head
   script(src='https://code.jquery.com/jquery-3.7.0.min.js', integrity='sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=', crossorigin='anonymous')
   script(src='https://cdn.tailwindcss.com')
 body.bg-gray-700
-  header.flex.flex-row.items-center.justify-center
-    ul.flex.flex-wrap.text-sm.font-medium.text-center.text-gray-400.border-gray-200.gap-4.my-4
-      li.nav-item.flex.items-center.justify-center(data-target='desktop-android-content')
-        a.inline-block.p-4.rounded-lg(href='#', class='hover:text-gray-300 hover:bg-gray-800 focus:border-4 focus:border-gray-300') Pair using Dekstop or Android
-      li.nav-item.flex.items-center.justify-center(data-target='vr-content')
-        a.inline-block.p-4.rounded-lg(href='#', class='hover:text-gray-300 hover:bg-gray-800 focus:border-4 focus:border-gray-300') Pair usign VR Device
-  main.flex.flex-col.items-center.justify-center.w-full.h-full
+  //- nav(class="flex flex-col sm:flex-row items-center justify-center")
+  //-   ul.text-sm.font-medium.text-center.text-gray-400.border-gray-200.gap-4.my-4(class="flex flex-col sm:flex-row flex-wrap")
+  //-     li.nav-item.flex.items-center.justify-center(data-target='desktop-android-content')
+  //-       a.inline-block.p-4.rounded-lg(href='#', class='hover:text-gray-300 hover:bg-gray-800 focus:border-4 focus:border-gray-300') Pair with Dekstop or Android
+  //-     li.nav-item.flex.items-center.justify-center(data-target='vr-content')
+  //-       a.inline-block.p-4.rounded-lg(href='#', class='hover:text-gray-300 hover:bg-gray-800 focus:border-4 focus:border-gray-300') Pair with VR Device
+  .flex.flex-col.items-center.justify-center.gap-6.pt-10.px-6
+    .flex.items-center.justify-center.px-6.py-4.border-4.rounded-full.border-white.max-w-sm.back-to-menu.hidden.cursor-pointer
+      .text-md.text-white Back
+    .flex.flex-col.items-center.justify-center.my-8.mx-6.wizard
+      .text-4xl.text-white.my-6 0. Please choose your operating platfom
+      .text-white.mt-4(class="flex flex-col sm:flex-row items-center justify-center gap-4")
+        .nav-item.flex.flex-col.justify-center.items-center.border-4.rounded-md.gap-4.px-4.py-6.cursor-pointer(class="sm:flex-row",data-target='desktop-android-content')
+          img.max-w-sm.h-12(alt="computer pic",src="/images/computer.png")
+          .text-2xl Desktop /
+          img.max-w-sm.h-12(alt="android pic",src="/images/android.png")
+          .text-2xl Android
+        .nav-item.flex.justify-center.items-center.border-4.rounded-md.gap-4.px-4.py-6.cursor-pointer(data-target='vr-content')
+          img.max-w-sm.h-12(alt="vr pic",src="/images/vr-glasses.png")
+          .text-2xl VR
+  main.flex.flex-col.items-center.justify-center.w-full.h-full.my-10
     .container.py-8.px-4.text-gray-300
       #desktop-android-content.content-div.hidden
         // Home Content
         #desktop-install.flex.flex-col.items-center.gap-2
-          h2.text-2xl Spacecollab Desktop Installation Confirmation
+          h2.text-2xl 1. Install Spacecollab Desktop version
           .mb-4
-            p Have You Download The Desktop App Yet?
+            p Have you installed the SpaceCollab Desktop App?
           button#desktop-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl Yes, I have.
           button#desktop-not-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl No, I have not.
         #android-install.flex.flex-col.items-center.gap-2
-          h2.text-2xl Spacecollab Android Installation Confirmation
+          h2.text-2xl 1. Install SpaceCollab Android version
           .mb-4
-            p Have You Download The Android App Yet?
+            p Have you installed the SpaceCollab Android version on your phone?
           button#android-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl Yes, I have.
           button#android-not-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl No, I have not.
-        #desktop-download-link.flex.flex-col.items-center.gap-2.hidden
-          h2.text-2xl Desktop Download Link
-          .mb-4
-            a Link
-          .mb-4
-            p
-              | If You are done installing, 
-              span.text-blue-700.cursor-pointer.desktop-done-install click here
-        #android-download-link.flex.flex-col.items-center.gap-2.hidden
-          h2.text-2xl Android Download Link
-          .mb-4
-            p Link
-          .mb-4
-            p
-              | If You are done installing, 
-              span.text-blue-700.cursor-pointer.android-done-install click here
+        #desktop-download-link.flex.flex-col.items-center.gap-8.hidden
+          h2.text-2xl 2. Download SpaceCollab Desktop version
+          a.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.px-4.py-2 2.1. Download here
+          p
+            | 2.2 If You are done installing, 
+          button.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.desktop-done-install.px-4.py-2
+            .text-gray-200 click here  
+        #android-download-link.flex.flex-col.items-center.gap-8.hidden
+          h2.text-2xl 2. Download SpaceCollab Android version
+          a.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.px-4.py-2 2.1. Download here
+          p
+            | 2.2. If You are done installing, 
+          button.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.android-done-install.px-4.py-2
+            .text-gray-200 click here
         #desktop-content.content.flex.flex-col.items-center.gap-2
-          h2.text-2xl SpaceCollab Desktop
+          h2.text-2xl 3. SpaceCollab Desktop Pair
           .mb-4
             p
-              | Make sure to click the link below to connect through Deeplink with 
-              br
-              |                 Spacecollab Interactive Education Program
-          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${deeplink_url}`, target='_blank') Deep Link Desktop
+              | Open the experience by clicking the button below
+          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${deeplink_url}`, target='_blank') Open SpaceCollab Desktop App
         #android-content.content.flex.flex-col.items-center.gap-2
-          h2.text-2xl SpaceCollab Android Pair
+          h2.text-2xl 3. SpaceCollab Android Pair
           .mb-4
             p
-              | Make sure to click the link below to connect through Deeplink with 
-              br
-              |                 Spacecollab Interactive Education Program
-          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${depplink_url}`, target='_blank') Deep Link Android
+              | Open the experience by clicking the button below 
+          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${depplink_url}`, target='_blank') Open SpaceCollab Android App
       #vr-content.content-div.hidden
-        // Home Content
         .flex.flex-col.items-center.gap-2
-          h2.text-2xl VR SpaceCollab
+          h2.text-2xl 1. Login SpaceCollab in VR (Meta Quest 2)
           .mb-4.flex.flex-col.items-center.gap-4
             p
-              | This is the content for the VR page. Copy the code below and use it on the spacecollab app
+              | Please remember the code and use it on the SpaceCollab app to login using your account.
             h2.text-2xl.codePair=codePair
+            button#copyButton.bg-blue-500.text-white.py-2.px-4.rounded-lg Copy to Clipboard
 script.
   // Load characters on page load
   $(document).ready(function() {
     const userAgent = navigator.userAgent;
     let platform = null;
+
+    $('.back-to-menu').click(function() {
+      // Hide all content divs
+      $(".content-div").addClass("hidden")
+      //- remove hide from wizard
+      $('.wizard').removeClass('hidden');
+      //- hide back button
+      $('.back-to-menu').addClass('hidden');
+    })
 
     function decidesIfPcorAndro() {
       $('#desktop-install').removeClass('hidden');
@@ -117,7 +134,7 @@ script.
     $("#android-installed").click(function() {
       console.log('heiho', platform)
       if (platform === 'android') {
-        $("#android-download").removeClass("hidden");
+        $("#android-content").removeClass("hidden");
         $("#android-install").addClass("hidden");
       }
     })
@@ -125,9 +142,9 @@ script.
       //to reset installation confirmation
       decidesIfPcorAndro();
       // Remove the "text-blue-600" class from all navigation items
-      $(".nav-item").removeClass("text-blue-600");
+      //- $(".nav-item").removeClass("text-blue-600");
       // Add the "text-blue-600" class to the clicked navigation item
-      $(this).addClass("text-blue-600");
+      //- $(this).addClass("text-blue-600");
       var targetDivID = $(this).data("target");
       // Hide all content divs
       $(".content-div").addClass("hidden")
@@ -135,5 +152,26 @@ script.
       $("#" + targetDivID).removeClass("hidden");
       // hide the desktop and android content
       $('.content').addClass('hidden');
+      //- hide wizard
+      $('.wizard').addClass('hidden');
+      $('.back-to-menu').removeClass('hidden');
     });
+    $('#copyButton').click(function() {
+      let copyText = $(".codePair").text();
+      var tempTextArea = $("<textarea>");
+      tempTextArea.val(copyText);
+      $("body").append(tempTextArea);
+
+      tempTextArea.select();
+      tempTextArea[0].setSelectionRange(0, 99999);
+      
+      document.execCommand("copy");
+      tempTextArea.remove();
+      $(this).text("Copied!");
+
+      /* Change button text back after a short delay */
+      setTimeout(function() {
+          $("#copyButton").text("Copy to Clipboard");
+      }, 1000);
+    })
   });

@@ -3,7 +3,6 @@ head
   title SpaceCollab DeepLink
   script(src='https://code.jquery.com/jquery-3.7.0.min.js', integrity='sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=', crossorigin='anonymous')
   script(src='https://cdn.tailwindcss.com')
-  script(src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js")
 body.bg-gray-700
   //- header.flex.flex-row.items-center.justify-center
   //-   ul.flex.flex-wrap.text-sm.font-medium.text-center.text-gray-400.border-gray-200.gap-4.my-4
@@ -88,40 +87,25 @@ body.bg-gray-700
             h2.text-2xl.codePair=codePair
             button#copyButton.bg-blue-500.text-white.py-2.px-4.rounded-lg Copy to Clipboard
       #sync-grade-content.content-div.hidden
-        .flex.flex-col.items-center.gap-6
-          .flex.items-center.justify-center.gap-4.mx-4.my-6
-            #course_title.text-gray-200.text-2xl=course_title
-            #resource_link_title.text-gray-200.text-2xl=resource_link_title
+        .flex.flex-col.items-center.gap-2
           p.text-xl 
-            | Fill in the blanks to enter the grade of the students
+            | Click This Button to Sync The Grade on course title 
+            span#course_title.text-blue-700=course_title
+            |  and resource title 
+            span#resource_link_title.text-blue-700=resource_link_title
           #course_id.hidden=course_id
           #resource_link_id.hidden=resource_link_id
           #moodle_service_url.hidden=moodle_service_url
-          .flex.flex-col.items-start.justify-center.gap-4
-            each val in studentLists
-              form.flex.gap-4.items-center.justify-center(id=`form_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)
-                .flex.flex-col.items-start.justify-center.gap-2.my-2
-                  label.font-medium.text-gray-200.text-sm(for=`gradeinput_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)=val.lis_person_name_full
-                  input.p-2.rounded-full.text-gray-800(placeholder="Grade in Format 100% = 100", type="number", name=`grade_${val.user_id}`, id=`gradeinput_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)
-                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_result_sourcedid-${val.user_id}`, value=val.lis_result_sourcedid)
-                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_person_contact_email_primary-${val.user_id}`, value=val.lis_person_contact_email_primary)
-                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_course_section_sourcedid-${val.user_id}`, value=val.lis_course_section_sourcedid)
-                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`resource_link_id-${val.user_id}`, value=val.resource_link_id)
-                button.border-2.rounded-md.border-white.flex.items-center.justify-center.px-4.py-2.submit-button Upsert
-          //- button#sync.px-4.py-2.border-2.rounded-2xl.border-gray-300.self-end Sync Grades
-          //- #loading-bar.max-w-md.w-full.bg-gray-200.rounded-full.h-3.mb-4
-          //-   .bg-blue-600.h-3.rounded-full
-          //- h2#progress-percentage.text-xl
-          //- #lti-errors.flex.flex-col.items-center.gap-4  
+          button#sync.px-4.py-2.border-2.rounded-2xl.border-gray-300.self-end Sync Grades
+          #loading-bar.max-w-md.w-full.bg-gray-200.rounded-full.h-3.mb-4
+            .bg-blue-600.h-3.rounded-full
+          h2#progress-percentage.text-xl
+          #lti-errors.flex.flex-col.items-center.gap-4  
 script.
   // Load characters on page load
   $(document).ready(function() {
-
-    Cookies.set('username', 'john_doe', { expires: 7 }); 
-
-    const course_id = $("#course_id").text();
-    const resource_link_id = $("#resource_link_id").text();
-    const moodle_service_url = $("#moodle_service_url").text();
+    $("#loading-bar").hide();
+    $("#lti-errors").hide();
 
     $('.back-to-menu').click(function() {
       // Hide all content divs
@@ -132,60 +116,66 @@ script.
       $('.back-to-menu').addClass('hidden');
     })
 
-    $('.submit-button').click(function (e) {
-      e.preventDefault();
-
-      const form = $(this).closest('form');
-
-      const formData = form.serializeArray();
-
-      const grade = parseFloat(formData[0].value);
-      const sourcedid = formData[1].value;
-      const email = formData[2].value;
-      const courseId = formData[3].value;
-      const resourceLinkId = formData[4].value;
-
-      if (grade % 1 !== 0 || grade < 0 || grade > 100) {
-        alert("Grade must be between 0 and 100 and not a floating number");
-        return
-      }
-
-      //- console.log("Submitting form with ID:", form.attr('id'));
-      //- console.log("Form data:", JSON.stringify(formData));
-
-      const data = {
-        secret: 'secret',
-        key: 'ltijavascript',
-        url: moodle_service_url,
-        sourcedid,
-        grade: grade / 100,
-      }
-
-      console.log(data)
-
+    async function syncStudent () {
+      //- get all the grades and result source id from the lowdb
+      //- shoot them one by one using Promise.all
+      $("#loading-bar").css({ width: "0%"});
+      $("#loading-bar").show();
+      const course_id = $("#course_id").text();
+      const resource_link_id = $("#resource_link_id").text();
+      const moodle_service_url = $("#moodle_service_url").text();
       $.ajax({
-        url: "/lti/send_outcomes",
-        method: "POST",
-        data,
-        success: (response) => {
-          if (response.includes('Outcome successfully sent')) {
-            document.cookie = "name=overcooked";
-            //- Cookies.set(`gradeinput_${email}_${courseId}_${resourceLinkId}`, data.grade)
-            alert('Outcome Successfully sent')
-          } else {
-            alert(`Sending Outcome failed`)
+        url: `/api/data?lis_course_section_sourcedid=${course_id}&resource_link_id=${resource_link_id}`,
+        method: "GET",
+        dataType: 'json',
+        success: async (response) => {
+          if (response.length > 0) {
+            const grades = [];
+            const maxLength = response.length;
+            for (const [index, gradeObject] of response.entries()) {
+              //- grades.push(
+              //- )
+              const loadingBarProgress = `${parseInt(((index + 1)/maxLength) * 100)}%`
+              await $.ajax({
+                url: "/lti/send_outcomes",
+                method: "POST",
+                data: {
+                  secret: 'secret',
+                  key: 'ltijavascript',
+                  url: moodle_service_url,
+                  sourcedid: gradeObject.lis_result_sourcedid,
+                  grade: gradeObject.grade
+                },
+                success: (response) => {
+                  if (response.includes('Outcome successfully sent')) {
+                    $('#loading-bar').css({ width: loadingBarProgress, })
+                    $("#progress-percentage").text(loadingBarProgress);
+                  } else {
+                    alert(`Something went inputing ${gradeObject?.lis_person_name_full}'s grade`)
+                  }
+                },
+                error: (error) => {}
+              })         
+            }
+            //- await Promise.all(grades);  
           }
         },
         error: (error) => {
-          console.log("ERROR: " + error);
-        }
+          //- error fetching users and grade
+          alert("Error: " + error);
+        },
       })
+    }
+    
+    $("#sync").click(async function (){
+      await syncStudent();
     })
 
     const userAgent = navigator.userAgent;
     let platform = null;
 
     function decidesIfPcorAndro() {
+      console.log("HEHEHE")
       $('#desktop-install').removeClass('hidden');
       $('#android-install').removeClass('hidden');
       $("#desktop-download-link").addClass('hidden');
@@ -193,18 +183,19 @@ script.
       // Check if the User-Agent contains "Android"
       if (userAgent.match(/Android/i)) {
         // User is accessing from an Android device
-        //- console.log("Android device detected", navigator.userAgent);
+        console.log("Android device detected", navigator.userAgent);
         platform = 'android';
         $('#desktop-install').addClass('hidden')
       } else {
         // User is accessing from a PC or another device
-        //- console.log("PC or other device detected", navigator.userAgent);
+        console.log("PC or other device detected", navigator.userAgent);
         platform = 'desktop';
         $('#android-install').addClass('hidden')
       }
     }
     decidesIfPcorAndro();
     $("#desktop-installed").click(function() {
+      console.log('heiho', platform)
       if (platform === 'desktop') {
         $("#desktop-content").removeClass("hidden");
         $("#desktop-install").addClass("hidden");
@@ -227,6 +218,7 @@ script.
       $("#android-install").addClass("hidden");
     })
     $("#android-installed").click(function() {
+      console.log('heiho', platform)
       if (platform === 'android') {
         $("#android-download").removeClass("hidden");
         $("#android-install").addClass("hidden");

@@ -117,9 +117,9 @@ module.exports = function (app) {
   app.post('/lti/get_outcomes', (req, res) => {
     lti.get_outcomes(req, res);
   });
-  // app.get('/lti/membership', (req, res) => {
-  //   lti.get_membership(req, res);
-  // });
+  app.get('/lti/membership', (req, res) => {
+    lti.get_membership(req, res);
+  });
   app.post('/lti', (req, res) => {
     console.log('--------------------\nlti');
     console.log('LTI11 - receive post from Learn LTI launch');
