@@ -1,5 +1,6 @@
 doctype html
 head
+  meta(name='viewport', content='width=device-width, initial-scale=1.0')
   title SpaceCollab DeepLink
   script(src='https://code.jquery.com/jquery-3.7.0.min.js', integrity='sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=', crossorigin='anonymous')
   script(src='https://cdn.tailwindcss.com')
@@ -17,7 +18,7 @@ body.bg-gray-700
     .flex.items-center.justify-center.px-6.py-4.border-4.rounded-full.border-white.max-w-sm.back-to-menu.hidden.cursor-pointer
       .text-md.text-white Back
     .flex.flex-col.items-center.justify-center.my-8.mx-6.wizard
-      .text-4xl.text-white.my-6 0. Please choose your operating platfom
+      .text-white.my-6(class="text-lg text-center sm:text-justify sm:text-4xl") 1. Please choose your operating platfom
       .text-white.mt-4(class="flex flex-col sm:flex-row items-center justify-center gap-4")
         .nav-item.flex.flex-col.justify-center.items-center.border-4.rounded-md.gap-4.px-4.py-6.cursor-pointer(class="sm:flex-row",data-target='desktop-android-content')
           img.max-w-sm.h-12(alt="computer pic",src="/images/computer.png")
@@ -35,53 +36,47 @@ body.bg-gray-700
       #desktop-android-content.content-div.hidden
         // Home Content
         #desktop-install.flex.flex-col.items-center.gap-2
-          h2.text-2xl Spacecollab Desktop Installation Confirmation
+          h2.text-2xl.text-center 2. Install Spacecollab Desktop version
           .mb-4
-            p Have You Download The Desktop App Yet?
+            p Have you installed the SpaceCollab Desktop App?
           button#desktop-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl Yes, I have.
           button#desktop-not-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl No, I have not.
         #android-install.flex.flex-col.items-center.gap-2
-          h2.text-2xl Spacecollab Android Installation Confirmation
+          h2.text-2xl.text-center 2. Install SpaceCollab Android version
           .mb-4
-            p Have You Download The Android App Yet?
+            p Have you installed the SpaceCollab Android version on your phone?
           button#android-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl Yes, I have.
           button#android-not-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl No, I have not.
-        #desktop-download-link.flex.flex-col.items-center.gap-2.hidden
-          h2.text-2xl Desktop Download Link
-          .mb-4
-            a Link
-          .mb-4
-            p
-              | If You are done installing, 
-              span.text-blue-700.cursor-pointer.desktop-done-install click here
-        #android-download-link.flex.flex-col.items-center.gap-2.hidden
-          h2.text-2xl Android Download Link
-          .mb-4
-            p Link
-          .mb-4
-            p
-              | If You are done installing, 
-              span.text-blue-700.cursor-pointer.android-done-install click here
+        #desktop-download-link.flex.flex-col.items-center.gap-8.hidden
+          h2.text-2xl.text-center 3. Download SpaceCollab Desktop version
+          a.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.px-4.py-2(href="https://bit.ly/3Z9ZdzV", target="_blank") 2.1. Download here
+          p
+            | 3.2 If You are done installing, 
+          button.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.desktop-done-install.px-4.py-2
+            .text-gray-200 click here  
+        #android-download-link.flex.flex-col.items-center.gap-8.hidden
+          h2.text-2xl.text-center 3. Download SpaceCollab Android version
+          a.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.px-4.py-2(href="https://bit.ly/3EudqOo", target="_blank") 2.1. Download here
+          p
+            | 3.2. If You are done installing, 
+          button.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.android-done-install.px-4.py-2
+            .text-gray-200 click here
         #desktop-content.content.flex.flex-col.items-center.gap-2
-          h2.text-2xl SpaceCollab Desktop
+          h2.text-2xl 4. SpaceCollab Desktop Pair
           .mb-4
             p
-              | Make sure to click the link below to connect through Deeplink with 
-              br
-              |                 Spacecollab Interactive Education Program
-          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${deeplink_url}`, target='_blank') Deep Link Desktop
+              | Open the experience by clicking the button below
+          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${deeplink_url}`, target='_blank') Open SpaceCollab Desktop App
         #android-content.content.flex.flex-col.items-center.gap-2
-          h2.text-2xl SpaceCollab Android Pair
+          h2.text-2xl 4. SpaceCollab Android Pair
           .mb-4
             p
-              | Make sure to click the link below to connect through Deeplink with 
-              br
-              |                 Spacecollab Interactive Education Program
-          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${depplink_url}`, target='_blank') Deep Link Android
+              | Open the experience by clicking the button below 
+          a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${deeplink_url}`, target='_blank') Open SpaceCollab Android App
       #vr-content.content-div.hidden
         // Home Content
         .flex.flex-col.items-center.gap-2
-          h2.text-2xl VR SpaceCollab
+          h2.text-2xl.text-center 2. Login SpaceCollab in VR (Meta Quest 2)
           .mb-4.flex.flex-col.items-center.gap-4
             p
               | This is the content for the VR page. Copy the code below and use it on the spacecollab app
@@ -106,11 +101,12 @@ body.bg-gray-700
               form.flex.gap-4.items-center.justify-center(id=`form_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)
                 .flex.flex-col.items-start.justify-center.gap-2.my-2
                   label.font-medium.text-gray-200.text-sm(for=`gradeinput_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)=val.lis_person_name_full
-                  input.p-2.rounded-full.text-gray-800(type="number", name=`grade`, id=`gradeinput_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`)
+                  input.p-2.rounded-full.text-gray-800(type="number", name=`grade`, id=`gradeinput_${val.lis_person_contact_email_primary}_${val.lis_course_section_sourcedid}_${val.resource_link_id}`, value=val.grade)
                 input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_result_sourcedid`, value=val.lis_result_sourcedid)
                 input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_person_contact_email_primary`, value=val.lis_person_contact_email_primary)
                 input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`lis_course_section_sourcedid`, value=val.lis_course_section_sourcedid)
                 input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`resource_link_id`, value=val.resource_link_id)
+                input.p-2.rounded-full.text-gray-800.hidden(type="text", name=`user_id`, value=val.user_id)
                 button.border-2.rounded-md.border-white.flex.items-center.justify-center.px-4.py-2.submit-button Upsert
           //- button#sync.px-4.py-2.border-2.rounded-2xl.border-gray-300.self-end Sync Grades
           //- #loading-bar.max-w-md.w-full.bg-gray-200.rounded-full.h-3.mb-4
@@ -129,37 +125,66 @@ script.
     const resource_link_id = $("#resource_link_id").text();
     const moodle_service_url = $("#moodle_service_url").text();
 
-    async function syncGrade () {
-      const forms = $('form');
+    //- const syncGradeLocalStorage = () => {
+    //-   const grades = JS
+    //- }
 
-      for (const form of forms) {
-        const sourcedidInput = $(form).find('input[name="lis_result_sourcedid"]');
-        const sourcedid = sourcedidInput.val();
+    //- const setGradeLocalStorage = (sourcedid, user_id, grade) => {
+    //-   let gradesLocalStorage = localStorage.getItem(`grades-${course_id}-${resource_link_id}`)
+    //-   if (gradesLocalStorage) {
+    //-     gradesLocalStorage = JSON.parse(gradesLocalStorage);
+    //-     if (gradesLocalStorage.length !== 0) {
+    //-       gradesLocalStorage = gradesLocalStorage.map(item => {
 
-        const data = {
-          key: consumer_key,
-          secret: secret,
-          url: moodle_service_url,
-          sourcedid
-        }
+    //-       })
+    //-     }
+    //-   }
+    //- }
 
-        $.ajax({
-          url: "/lti/get_outcomes",
-          method: "POST",
-          data,
-          success: ({result}) => {
-            const gradeInput = $(form).find('input[name="grade"]');
-            gradeInput.val(result * 100)
-          },
-          error: (error) => {
-            console.log("ERROR: " + error);
-          }
-        })
+    //- const syncGradeLocalStorage = () => {
+    //-   let gradesLocalStorage = localStorage.getItem(`grades-${course_id}-${resource_link_id}`)
+    //-   if (!gradesLocalStorage) {
+    //-     localStorage.setItem(`grades-${course_id}-${resource_link_id}`, JSON.stringify([]))
+    //-     console.log("HIHIHHI")
+    //-   } else {
+    //-     gradesLocalStorage = JSON.parse(gradesLocalStorage);
+    //-     console.log("HOHOHO", gradesLocalStorage)
+    //-   }
+    //- }
 
-      }
-    }
+    //- syncGradeLocalStorage();
+
+    //- async function syncGrade () {
+    //-   const forms = $('form');
+
+    //-   for (const form of forms) {
+    //-     const sourcedidInput = $(form).find('input[name="lis_result_sourcedid"]');
+    //-     const sourcedid = sourcedidInput.val();
+
+    //-     const data = {
+    //-       key: consumer_key,
+    //-       secret: secret,
+    //-       url: moodle_service_url,
+    //-       sourcedid
+    //-     }
+
+    //-     $.ajax({
+    //-       url: "/lti/get_outcomes",
+    //-       method: "POST",
+    //-       data,
+    //-       success: ({result}) => {
+    //-         const gradeInput = $(form).find('input[name="grade"]');
+    //-         gradeInput.val(result * 100)
+    //-       },
+    //-       error: (error) => {
+    //-         console.log("ERROR: " + error);
+    //-       }
+    //-     })
+
+    //-   }
+    //- }
     
-    syncGrade();
+    //- syncGrade();
 
     $('.back-to-menu').click(function() {
       // Hide all content divs
@@ -182,6 +207,7 @@ script.
       const email = formData[2].value;
       const courseId = formData[3].value;
       const resourceLinkId = formData[4].value;
+      const userId = formData[5].value;
 
       if (grade % 1 !== 0 || grade < 0 || grade > 100) {
         alert("Grade must be between 0 and 100 and not a floating number");
@@ -197,6 +223,9 @@ script.
         url: moodle_service_url,
         sourcedid,
         grade: grade / 100,
+        lis_course_section_sourcedid: courseId,
+        user_id: userId,
+        resource_link_id: resourceLinkId
       }
 
       console.log(data)
@@ -207,8 +236,6 @@ script.
         data,
         success: (response) => {
           if (response.includes('Outcome successfully sent')) {
-            document.cookie = "name=overcooked";
-            //- Cookies.set(`gradeinput_${email}_${courseId}_${resourceLinkId}`, data.grade)
             alert('Outcome Successfully sent')
           } else {
             alert(`Sending Outcome failed`)
@@ -248,6 +275,12 @@ script.
         $("#desktop-install").addClass("hidden");
       }
     })
+    $("#android-installed").click(function() {
+      if (platform === 'android') {
+        $("#android-content").removeClass("hidden");
+        $("#android-install").addClass("hidden");
+      }
+    })
     $("#desktop-not-installed").click(function() {
       $("#desktop-download-link").removeClass('hidden');
       $("#desktop-install").addClass("hidden");
@@ -263,12 +296,6 @@ script.
     $("#android-not-installed").click(function() {
       $("#android-download-link").removeClass('hidden');
       $("#android-install").addClass("hidden");
-    })
-    $("#android-installed").click(function() {
-      if (platform === 'android') {
-        $("#android-download").removeClass("hidden");
-        $("#android-install").addClass("hidden");
-      }
     })
     $('#copyButton').click(function() {
       let copyText = $(".codePair").text();

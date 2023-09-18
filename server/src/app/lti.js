@@ -104,7 +104,7 @@ export const got_launch = async (req, res) => {
     )
 
     const codePair = data?.user_uid
-      ? `${data?.user_uid}_${req.body.resource_link_id}`
+      ? `${data?.user_uid}`
       : "Pair code not found.";
 
     const moodle_service_url = req.body.lis_outcome_service_url
@@ -121,6 +121,7 @@ export const got_launch = async (req, res) => {
       });
     } else if (req.body.roles == "Instructor" || req.body.roles == "urn:lti:role:ims/lis/Instructor") {
       const appInfo = config.default.lti11Setup;
+      deeplink_url = `spacecollab://?code=${codePair}`;
       res.render("teacher", {
         resource_link_id: "",
         course_id: req.body.lis_course_section_sourcedid,
@@ -360,7 +361,7 @@ export const outcomes = (req, res) => {
   });
 };
 
-export const send_outcomes = (req, res) => {
+export const send_outcomes = async (req, res) => {
   try {
     let options = {};
 
@@ -372,6 +373,13 @@ export const send_outcomes = (req, res) => {
     let grade = parseFloat(req.body.grade);
 
     let outcomes_service = new lti.OutcomeService(options);
+
+    await axios.post("https://lti.akses.my.id/api/grade", {
+      user_id: req.body.user_id,
+      lis_course_section_sourcedid: req.body.lis_course_section_sourcedid,
+      resource_link_id: req.body.resource_link_id,
+      grade: grade * 100
+    })
 
     outcomes_service.send_replace_result(grade, function (err, result) {
       //console.log(`Replace result ${result}`); //True or false
@@ -414,6 +422,7 @@ export const get_outcomes = (req, res) => {
         result,
       })
     } else {
+      
       return res.status(500).send('error')
     }
 
