@@ -15,7 +15,7 @@ body.bg-gray-700
     .flex.items-center.justify-center.px-6.py-4.border-4.rounded-full.border-white.max-w-sm.back-to-menu.hidden.cursor-pointer
       .text-md.text-white Back
     .flex.flex-col.items-center.justify-center.my-8.mx-6.wizard
-      .text-white.my-6(class="text-2xl text-center sm:text-justify sm:text-4xl") 0. Please choose your operating platfom
+      .text-white.my-6(class="text-2xl text-center sm:text-justify sm:text-4xl") 1. Please choose your operating platfom
       .text-white.mt-4(class="flex flex-col sm:flex-row items-center justify-center gap-4")
         .nav-item.flex.flex-col.justify-center.items-center.border-4.rounded-md.gap-4.px-4.py-6.cursor-pointer(class="sm:flex-row",data-target='desktop-android-content')
           img.max-w-sm.h-12(alt="computer pic",src="/images/computer.png")
@@ -30,46 +30,46 @@ body.bg-gray-700
       #desktop-android-content.content-div.hidden
         // Home Content
         #desktop-install.flex.flex-col.items-center.gap-2
-          h2.text-2xl(class="text-center") 1. Install Spacecollab Desktop version
+          h2.text-2xl(class="text-center") 2. Install Spacecollab Desktop version
           .mb-4
             p Have you installed the SpaceCollab Desktop App?
           button#desktop-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl Yes, I have.
           button#desktop-not-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl No, I have not.
         #android-install.flex.flex-col.items-center.gap-2
-          h2.text-2xl(class="text-center") 1. Install SpaceCollab Android version
+          h2.text-2xl(class="text-center") 2. Install SpaceCollab Android version
           .mb-4
             p Have you installed the SpaceCollab Android version on your phone?
           button#android-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl Yes, I have.
           button#android-not-installed.px-6.py-2.bg-gray-600.text-white.border.border-gray-800.rounded-xl No, I have not.
         #desktop-download-link.flex.flex-col.items-center.gap-8.hidden
-          h2.text-2xl(class="text-center") 2. Download SpaceCollab Desktop version
-          a.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.px-4.py-2(href="https://bit.ly/3Z9ZdzV", target="_blank") 2.1. Download here
+          h2.text-2xl(class="text-center") 3. Download SpaceCollab Desktop version
+          a.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.px-4.py-2(href="https://bit.ly/3Z9ZdzV", target="_blank") 3.1. Download here
           p
-            | 2.2 If You are done installing, 
+            | 3.2 If You are done installing, 
           button.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.desktop-done-install.px-4.py-2
             .text-gray-200 click here  
         #android-download-link.flex.flex-col.items-center.gap-8.hidden
-          h2.text-2xl(class="text-center") 2. Download SpaceCollab Android version
-          a.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.px-4.py-2(href="https://bit.ly/3EudqOo", target="_blank") 2.1. Download here
+          h2.text-2xl(class="text-center") 3. Download SpaceCollab Android version
+          a.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.px-4.py-2(href="https://bit.ly/3EudqOo", target="_blank") 3.1. Download here
           p
-            | 2.2. If You are done installing, 
+            | 3.2. If You are done installing, 
           button.flex.items-center.justify-center.border-4.border-white.rounded-md.cursor-pointer.android-done-install.px-4.py-2
             .text-gray-200 click here
         #desktop-content.content.flex.flex-col.items-center.gap-2
-          h2.text-2xl 3. SpaceCollab Desktop Pair
+          h2.text-2xl 4. SpaceCollab Desktop Pair
           .mb-4
             p
               | Open the experience by clicking the button below
           a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${deeplink_url}`, target='_blank') Open SpaceCollab Desktop App
         #android-content.content.flex.flex-col.items-center.gap-2
-          h2.text-2xl 3. SpaceCollab Android Pair
+          h2.text-2xl 4. SpaceCollab Android Pair
           .mb-4
             p
               | Open the experience by clicking the button below 
           a.p-4.py-2.bg-gray-800.cursor-pointer.border.rounded-lg(href=`${deeplink_url}`, target='_blank') Open SpaceCollab Android App
       #vr-content.content-div.hidden
         .flex.flex-col.items-center.gap-2
-          h2.text-2xl.text-center 1. Login SpaceCollab in VR (Meta Quest 2)
+          h2.text-2xl.text-center 2. Login SpaceCollab in VR (Meta Quest 2)
           .mb-4.flex.flex-col.items-center.gap-4
             p
               | Please remember the code and use it on the SpaceCollab app to login using your account.
