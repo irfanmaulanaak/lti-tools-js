@@ -6,14 +6,6 @@ head
   script(src='https://cdn.tailwindcss.com')
   script(src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js")
 body.bg-gray-700
-  //- header.flex.flex-row.items-center.justify-center
-  //-   ul.flex.flex-wrap.text-sm.font-medium.text-center.text-gray-400.border-gray-200.gap-4.my-4
-  //-     li.nav-item.flex.items-center.justify-center(data-target='desktop-android-content')
-  //-       a.inline-block.p-4.rounded-lg(href='#', class='hover:text-gray-300 hover:bg-gray-800 focus:border-4 focus:border-gray-300') Pair using Dekstop or Android
-  //-     li.nav-item.flex.items-center.justify-center(data-target='vr-content')
-  //-       a.inline-block.p-4.rounded-lg(href='#', class='hover:text-gray-300 hover:bg-gray-800 focus:border-4 focus:border-gray-300') Pair usign VR Device
-  //-     li.nav-item.flex.items-center.justify-center(data-target='sync-grade-content')
-  //-       a.inline-block.p-4.rounded-lg(href='#', class='hover:text-gray-300 hover:bg-gray-800 focus:border-4 focus:border-gray-300') Sync Grade
   .flex.flex-col.items-center.justify-center.gap-6.pt-10.px-6
     .flex.items-center.justify-center.px-6.py-4.border-4.rounded-full.border-white.max-w-sm.back-to-menu.hidden.cursor-pointer
       .text-md.text-white Back
@@ -115,76 +107,13 @@ body.bg-gray-700
           //- #lti-errors.flex.flex-col.items-center.gap-4  
 script.
   // Load characters on page load
-  $(document).ready(function() {
-
-    Cookies.set('username', 'john_doe', { expires: 7 }); 
+  $(document).ready(function() { 
 
     const consumer_key = $('#consumer_key').text();
     const secret = $('#secret').text();
     const course_id = $("#course_id").text();
     const resource_link_id = $("#resource_link_id").text();
     const moodle_service_url = $("#moodle_service_url").text();
-
-    //- const syncGradeLocalStorage = () => {
-    //-   const grades = JS
-    //- }
-
-    //- const setGradeLocalStorage = (sourcedid, user_id, grade) => {
-    //-   let gradesLocalStorage = localStorage.getItem(`grades-${course_id}-${resource_link_id}`)
-    //-   if (gradesLocalStorage) {
-    //-     gradesLocalStorage = JSON.parse(gradesLocalStorage);
-    //-     if (gradesLocalStorage.length !== 0) {
-    //-       gradesLocalStorage = gradesLocalStorage.map(item => {
-
-    //-       })
-    //-     }
-    //-   }
-    //- }
-
-    //- const syncGradeLocalStorage = () => {
-    //-   let gradesLocalStorage = localStorage.getItem(`grades-${course_id}-${resource_link_id}`)
-    //-   if (!gradesLocalStorage) {
-    //-     localStorage.setItem(`grades-${course_id}-${resource_link_id}`, JSON.stringify([]))
-    //-     console.log("HIHIHHI")
-    //-   } else {
-    //-     gradesLocalStorage = JSON.parse(gradesLocalStorage);
-    //-     console.log("HOHOHO", gradesLocalStorage)
-    //-   }
-    //- }
-
-    //- syncGradeLocalStorage();
-
-    //- async function syncGrade () {
-    //-   const forms = $('form');
-
-    //-   for (const form of forms) {
-    //-     const sourcedidInput = $(form).find('input[name="lis_result_sourcedid"]');
-    //-     const sourcedid = sourcedidInput.val();
-
-    //-     const data = {
-    //-       key: consumer_key,
-    //-       secret: secret,
-    //-       url: moodle_service_url,
-    //-       sourcedid
-    //-     }
-
-    //-     $.ajax({
-    //-       url: "/lti/get_outcomes",
-    //-       method: "POST",
-    //-       data,
-    //-       success: ({result}) => {
-    //-         const gradeInput = $(form).find('input[name="grade"]');
-    //-         gradeInput.val(result * 100)
-    //-       },
-    //-       error: (error) => {
-    //-         console.log("ERROR: " + error);
-    //-       }
-    //-     })
-
-    //-   }
-    //- }
-    
-    //- syncGrade();
 
     $('.back-to-menu').click(function() {
       // Hide all content divs
@@ -213,9 +142,6 @@ script.
         alert("Grade must be between 0 and 100 and not a floating number");
         return
       }
-
-      //- console.log("Submitting form with ID:", form.attr('id'));
-      //- console.log("Form data:", JSON.stringify(formData));
 
       const data = {
         secret,
